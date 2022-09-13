@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div class="screen">
+    <h1>Tic Tac Toe</h1>
+    <h3>Your turn: <span data-turn="true"></span></h3>
+    <div class="board">
+      <div class="line">
+        <button data-column="1" data-row="1" class="board-button"></button>
+        <button data-column="2" data-row="1" class="board-button"></button>
+        <button data-column="3" data-row="1" class="board-button"></button>
+      </div>
+      <div class="line">
+        <button data-column="1" data-row="2" class="board-button"></button>
+        <button data-column="2" data-row="2" class="board-button"></button>
+        <button data-column="3" data-row="2" class="board-button"></button>
+      </div>
+      <div class="line">
+        <button data-column="1" data-row="3" class="board-button"></button>
+        <button data-column="2" data-row="3" class="board-button"></button>
+        <button data-column="3" data-row="3" class="board-button"></button>
+      </div>
+    </div>
+    <h2 data-winner="true"></h2>
+    <button type="button" class="reset-button">Reset</button>
+  </div>
+  <script type="module" src="index.js"></script>
+</body>
+
+</html>
