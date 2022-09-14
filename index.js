@@ -1,48 +1,89 @@
-import { setState, getState, resetState } from "./state.js";
-import { setTurn, getTurn } from "./turnState.js";
-import { getActiveState, setActiveState } from "./activeState.js";
-import {
-  getWinner,
-  isThereWinner,
-  setWinner,
-  checkIfThereIsAndUpdateWinner,
-} from "./winnerState.js";
+import { GlobalState } from "./globalState.js";
+import { checkIfThereIsWinner } from "./utils.js";
+
+const GlobalStateWithDomUpdate = new Proxy(GlobalState, {
+  construct(target, args) {
+    const instance = new target(...args);
+
+    const turnElement = document.querySelector("[data-state=turn]");
+    const winnerElement = document.querySelector("[data-state=winner]");
+    const boardButtons = document.querySelectorAll(".board-button");
+
+    turnElement.textContent = instance.getState("turn");
+
+    return new Proxy(instance, {
+      get(target, key, receiver) {
+        if (key === "setState") {
+          return function (key, value, config) {
+            target.setState(key, value, config);
+
+            if (key === "board") {
+              const button = document.querySelector(
+                `[data-row="${config.row + 1}"][data-column="${
+                  config.column + 1
+                }"]`
+              );
+              button.textContent = value;
+            }
+
+            if (key === "turn") {
+              turnElement.textContent = target.getState("turn");
+            }
+
+            if (key === "winner") {
+              winnerElement.textContent = "The winner is: " + value;
+            }
+          };
+        }
+
+        if (key === "resetState") {
+          return function () {
+            target.resetState();
+
+            boardButtons.forEach((button) => {
+              button.textContent = "";
+            });
+
+            turnElement.textContent = target.getState("turn");
+            winnerElement.textContent = "";
+          };
+        }
+
+        return Reflect.get(target, key, receiver);
+      },
+    });
+  },
+});
 
 async function init() {
-  const turnElement = document.querySelector("[data-turn=true]");
-  const winnerElement = document.querySelector("[data-winner=true]");
+  const state = new GlobalStateWithDomUpdate();
   const boardButtons = document.querySelectorAll(".board-button");
   const resetButton = document.querySelector(".reset-button");
 
-  turnElement.innerHTML = getTurn();
-
   resetButton.addEventListener("click", function () {
-    setActiveState(true);
-    setTurn("x");
-    resetState();
-    setWinner(undefined);
-    console.log(getState(2, 2));
+    state.resetState();
   });
 
   boardButtons.forEach((button) => {
     button.addEventListener("click", function () {
-      if (getActiveState()) {
-        let row = button.dataset.row - 1;
-        let column = button.dataset.column - 1;
+      if (state.getState("winner")) return;
 
-        if (getState(row, column) === undefined) {
-          button.innerHTML = setState(row, column, getTurn());
-          setTurn();
-          checkIfThereIsAndUpdateWinner();
+      const row = button.dataset.row - 1;
+      const column = button.dataset.column - 1;
+      const turn = state.getState("turn");
 
-          if (isThereWinner()) {
-            winnerElement.innerHTML = "The winner is: " + getWinner();
-            getActiveState(false);
-          } else {
-            turnElement.innerHTML = getTurn();
-          }
-        }
+      if (state.getState("board")[row][column]) return;
+
+      state.setState("board", turn, { row, column });
+
+      const winner = checkIfThereIsWinner(state.getState("board"));
+
+      if (winner) {
+        state.setState("winner", winner);
+        return;
       }
+
+      state.setState("turn");
     });
   });
 }

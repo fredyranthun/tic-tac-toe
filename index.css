@@ -5,6 +5,7 @@
   flex-direction: column;
   align-items: center;
   padding-top: 150px;
+  background-color: #f0f0f0;
 }
 
 .board {
@@ -25,9 +26,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #000;
+  background: #222222;
   color: #fff;
   border: none;
+  border-radius: 4px;
   padding: 0;
   box-shadow: 0 0 0 1px #000;
   width: 48px;
@@ -36,11 +38,34 @@
 }
 
 .button:hover {
-  background-color: #0a0a0a;
+  background-color: #5f5f5f;
 }
 
 .button:active {
-  background-color: #1f1f1f;
+  background-color: #707070;
+}
+
+.reset-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  box-shadow: 0 0 0 1px #000;
+  width: 100px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: #5f5f5f;
+}
+
+.reset-button:active {
+  background-color: #707070;
 }
 
 .round {
@@ -49,11 +74,6 @@
   border: 2px #fff solid;
   border-radius: 9999px;
 }
-
-/* .x {
-  width: 36px;
-  height: 36px;
-} */
 
 .x:first-child {
   content: "";
